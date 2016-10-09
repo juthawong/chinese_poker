@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html ng-app="chinesePoker">
+<head>
+	<title>Chinese Poker</title>
+	<link rel="stylesheet" type="text/css" href="/styles/style.css">
+
+	<!-- Vendor Scripts -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+	<!-- Program Script -->
+    <script src="/scripts/homepage.js"></script>
+</head>
+<body>
+	<div class="container">
+		<h1>Chinese Poker</h1>
+		<button class='create'>Create New Game</button>
+		<button class='join'>Join Game</button>
+	</div>
+
+	<!-- MODAL: CREATE A NEW Game -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="game-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Create New Game</h4>
+          </div>
+          <form>
+	          <div class="modal-body">
+	            <fieldset class='form-horizontal'>
+	              <!-- Text input-->
+	              <div class="form-group">
+	                <label class="col-md-4 control-label" for="name">Name</label>
+	                <div class="col-md-4">
+	                  <input id="name" name="name" type="text" required="">
+	                </div>
+	              </div>
+
+	              <!-- Text input-->
+	              <div class="form-group">
+	                <label class="col-md-4 control-label" for="player1">Player1</label>
+	                <div class="col-md-4">
+	                  <input id="player1" name="player1" type="text">
+	                </div>
+	              </div>
+
+	              <!-- Text input-->
+	              <div class="form-group">
+	                <label class="col-md-4 control-label" for="player2">Player2</label>
+	                <div class="col-md-4">
+	                  <input id="player2" name="player2" type="text">
+	                </div>
+	              </div>
+
+	              <!-- Text input-->
+	              <div class="form-group">
+	                <label class="col-md-4 control-label" for="player3">Player3</label>
+	                <div class="col-md-4">
+	                  <input id="player3" name="player3" type="text">
+	                </div>
+	              </div>
+
+	              <!-- Text input-->
+	              <div class="form-group">
+	                <label class="col-md-4 control-label" for="player4">Player4</label>
+	                <div class="col-md-4">
+	                  <input id="player4" name="player4" type="text">
+	                </div>
+	              </div>
+	            </fieldset>
+	          </div>
+	          <div class="modal-footer">
+	            <button type="button" class="button" id="save-game">SAVE</button>
+	          </div>
+	   	  </form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</body>
+</html>
