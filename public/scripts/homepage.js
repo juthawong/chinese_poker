@@ -2,7 +2,8 @@ $(document).ready(function() {
 	function addEventListeners(){
 		$('.create').on("click",function(){$('#game-modal').modal()});
 		$('#save-game').on("click",createNewGame);
-		//TODO have modal to select which player you want to be
+		$('#games-set').on("click",'.game-title',openPlayerModal);
+		$('.player-select').on("click",'.join-game',joinGame);
 	}
 	addEventListeners();
 });
@@ -13,7 +14,8 @@ function createNewGame(e){
 	//Prepare game for DB
 	var newGame = {
     name: $('#name').val(),
-    isActive: true
+    isActive: true,
+    moveCounter: 0
   };
 
   //Prepare players for DB
@@ -45,7 +47,7 @@ function createNewGame(e){
  			console.log(playersArray);
  			loadPlayersToDB(playersArray);
     } 
-  });
+  }).then(getExistingGamesFromDB());
 }
 
 function loadPlayersToDB(playersArray){
@@ -78,14 +80,56 @@ function dealCards (playersArray) {
 	return playersArray;
 };
 
+function joinGame(event){
+	event.preventDefault();
+	var playerId = $(this).attr('id');
+	var gameId = $(this).attr('data-game');
+	var url = '/game/' + gameId + '/players/' + playerId;
+	$(location).attr('href',url);
+}
+
+function drawGamesOnScreen(games){
+	var source = $('#game-template').html();
+	var gameTemplate = Handlebars.compile(source);
+	var gameHtml = gameTemplate({ game: games });
+	$('#games-set').append(gameHtml);
+}
+
 function getExistingGamesFromDB(){
+
 	$.ajax({
 		method: "GET",
 		url: "/api/games",
 		success: function(games){
-			console.log(games);
+			drawGamesOnScreen(games);
 		}
-	})
+	});
 }
 
+getExistingGamesFromDB();
 
+
+function getPlayersFromDB(game_id){
+	$.ajax({
+		method: "GET",
+		url: "/api/" +game_id +"/players/",
+		success: function(players){
+			drawPlayersInModal(players);
+		}
+	});
+}
+
+function drawPlayersInModal(players){
+	var source = $('#player-template').html();
+	var playerTemplate = Handlebars.compile(source);
+	var playerHtml = playerTemplate({ player: players });
+	$('.player-select').append(playerHtml);
+}
+
+function openPlayerModal(event){
+	event.preventDefault();
+	console.log('hello');
+	var game_id = $(this).attr('id');
+	getPlayersFromDB(game_id);
+	$('#player-modal').modal();
+}

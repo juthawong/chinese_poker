@@ -62,7 +62,7 @@ app.get('/api/:game_id', function(request,response){
 	});
 });
 
-//Get info about all players
+//Get info about all players for a specific game
 app.get('/api/:game_id/players/', function(request,response){
 	db.Player.find({game: request.params.game_id},function(err, players){
 		response.send(players);
@@ -96,10 +96,12 @@ app.put('/api/:game_id/players/:id', function(request,response){
 	});
 });
 
-//Update move counter in the db
+//Update move counter and round in the db
 app.put('/api/:game_id/moveCounter', function(request,response){
 	db.Game.findOne({_id: request.params.game_id},function(err,game){
 		game.moveCounter++;
+		game.previousRoundOfMoves = request.body.previousRoundOfMoves;
+		console.dir(request);
 		game.save();
 		response.send(game);
 	});

@@ -9,3 +9,12 @@
 	display: inline-block;
 	width: 100%;
 }
+
+.game{
+	border: 1px solid black;
+	display: inline-block;
+}
+
+.selected{
+	color: red;
+}

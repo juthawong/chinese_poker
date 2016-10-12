@@ -18,7 +18,19 @@
 	<div class="container">
 		<h1>Chinese Poker</h1>
 		<button class='create'>Create New Game</button>
-		<button class='join'>Join Game</button>
+	</div>
+	<br>
+	<br>
+	<div class="container" id="games-set">
+		<script id="game-template" type="text/x-handlebars-template">
+			{{#each game}}
+			<div class="row">
+				<div class="game">
+				  <button id="{{_id}}" class="game-title">Join: {{name}}</button>
+		        </div>
+			</div>
+			{{/each}}
+		</script>
 	</div>
 
 	<!-- MODAL: CREATE A NEW Game -->
@@ -75,6 +87,31 @@
 	          </div>
 	          <div class="modal-footer">
 	            <button type="button" class="button" id="save-game">SAVE</button>
+	          </div>
+	   	  </form>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+	<!-- MODAL: Join a game -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="player-modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Join a Game</h4>
+          </div>
+          <form>
+	          <div class="modal-body player-select">
+	              <!-- Text input-->
+				<script id="player-template" type="text/x-handlebars-template">
+				{{#each player}}
+	              <!-- Text input-->
+	              <div class="form-group">
+	                <button class="col-md-4 control-label join-game" id="{{_id}}" data-game="{{game}}">{{name}}</button>
+	              </div>
+	            {{/each}}
+	            </script>
 	          </div>
 	   	  </form>
         </div><!-- /.modal-content -->

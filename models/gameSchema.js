@@ -5,7 +5,7 @@ var gameSchema = new Schema({
   name: String,
   previousRoundOfMoves: [],
   isActive: Boolean,
-  moveCounter: 0
+  moveCounter: Number
 });
 
 var Game = mongoose.model('Game', gameSchema);
