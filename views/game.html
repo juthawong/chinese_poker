@@ -17,14 +17,14 @@
 <body>
 	<h1>Chinese Poker</h1>
 	<div class="container">
-		<div class="player">
+		<div class="player row">
 			<script id="player-template" type="text/x-handlebars-template">
 				{{#each card}}
 					<div class="card my-card" id="{{this}}">{{this}}
 					</div>
 				{{/each}}
 			</script>
-		</div>
+		</div>	
 		<div class="opponents">
 		</div>
 		<div class="move-buttons row">

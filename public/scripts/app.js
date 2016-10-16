@@ -42,6 +42,7 @@ Player.prototype.getMoveCounterAndRound = function() {
 			self.moveCounter = game.moveCounter;
 			self.previousRoundOfMoves = game.previousRoundOfMoves;
 			self.checkIfItsMyMove();
+			self.displayPreviousMoves();
 		}
 	});
 };
@@ -83,10 +84,12 @@ Player.prototype.playCards = function(){
 		self.playCardsToDatabase();
 		self.emitMove();
 		self.updateObjectStateForMove();
+		self.displayPreviousMoves();
 	}
 	else if(self.isItMyTurn){
 		self.emitMove();
 		self.updateObjectStateForMove();
+		self.displayPreviousMoves();
 	}
 	else{
 		console.log("not your turn biatch");
@@ -95,16 +98,13 @@ Player.prototype.playCards = function(){
 
 Player.prototype.updatePreviousRoundOfMoves = function(move) {
 	var self = this;
-	console.log('here');
 	if(self.previousRoundOfMoves.length < 4){
 		self.previousRoundOfMoves.push(move);
-		console.log('updated');
 	}
 	else if(self.previousRoundOfMoves[1] === 'pass' && self.previousRoundOfMoves[2] === 'pass' && self.previousRoundOfMoves[3] === 'pass'){
 		self.previousRoundOfMoves = [];
 	}
 	else{
-		console.log('no im actually here');
 		self.previousRoundOfMoves.shift();
 		self.previousRoundOfMoves.push(move);
 	}
@@ -165,6 +165,7 @@ Player.prototype.listenForMoves = function(move) {
 		self.moveCounter++;
 		self.checkIfItsMyMove();
 		self.drawState();
+		self.displayPreviousMoves();
 	});
 }
 
@@ -202,13 +203,14 @@ Player.prototype.drawStateForOpponents = function() {
 	});
 };
 
-//TODO implement function to put previous moves on the screen
-// Player.prototype.displayPreviousMoves = function() {
-// 	var self = this;
-// 	self.previousRoundOfMoves.forEach(function(move){
-// 		$('"#' + move.id + '"').append(move.cards);
-// 	});
-// };
+//Implement function to put previous moves on the screen
+Player.prototype.displayPreviousMoves = function() {
+	var self = this;
+	self.previousRoundOfMoves.forEach(function(move){
+		var id = "#" + move.id
+		$(id).append('<div class="card">'+ move.cards +'</div>');
+	});
+};
 
 
 
