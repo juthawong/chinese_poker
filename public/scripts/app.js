@@ -12,11 +12,12 @@ function Player (game_id, player_id){
 	this.order;
 	this.moveCounter = 0;
 	this.previousRoundOfMoves = [];
+	this.player_name = "";
 
 	//Initialize game data and socket
+	this.getMoveCounterAndRound();
 	this.getCardDataFromDatabase();
 	this.getOpponentInfoFromDatabase();
-	this.getMoveCounterAndRound();
 	this.listenForMoves();
 }
 
@@ -28,6 +29,7 @@ Player.prototype.getCardDataFromDatabase = function(){
 		success: function(data){
 			self.cardsInHand = data.cardsInHand;
 			self.order = data.order;
+			self.player_name = data.name;
 			self.drawState();
 		}
 	});
@@ -181,6 +183,7 @@ Player.prototype.drawState = function() {
 	$('.opponent').remove();
 	this.drawStateForPlayer();
 	this.drawStateForOpponents();
+	this.updateWhoseMoveItIs();
 };
 
 Player.prototype.drawStateForPlayer = function() {
@@ -218,6 +221,20 @@ Player.prototype.displayPreviousMoves = function() {
 	var self = this;
 	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1];
 	$('.last-play').append('<div class="card">'+ move.cards +'</div>');
+};
+
+Player.prototype.updateWhoseMoveItIs = function() {
+	var self = this;
+	if((self.moveCounter % 4) === self.order ){
+		$('.player-to-move').text("Player to move is " + self.player_name);
+	}
+	else {
+		self.opponentData.forEach(function (opponent, index){
+			if((self.moveCounter % 4) === opponent.order ){
+				$('.player-to-move').text("Player to move is " + opponent.name);
+			}
+		});
+	}
 };
 
 
