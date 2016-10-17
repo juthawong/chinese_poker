@@ -5,16 +5,46 @@
 	display: inline-block;
 }
 
-.container{
-	display: inline-block;
+.container-fluid{
 	width: 100%;
+	text-align: center;
+	height: 100vh;
 }
 
-.game{
+.game_board{
 	border: 1px solid black;
-	display: inline-block;
 }
 
 .selected{
 	color: red;
+}
+
+.player{
+	text-align: center;
+}
+
+.opponents{
+	text-align: center;
+	height: 60vh;
+}
+
+.forty-vh{
+	height: 40vh;
+}
+
+.last-play{
+	top: 40%;
+}
+
+.left_game, .right_game{
+	top: 50%;
+}
+
+.title{
+	text-align: center;
+	height: 10vh;
+}
+
+*{
+	/*border: 1px solid green;*/
 }

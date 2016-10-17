@@ -78,7 +78,6 @@ Player.prototype.deselectCard = function(card){
 
 Player.prototype.playCards = function(){
 	var self = this;
-	//TODO fix this line for passing
 	if(self.isItMyTurn && self.selectedCards.length > 0){
 		self.updatePreviousRoundOfMoves({id: self.player_id, cards: self.selectedCards});
 		self.playCardsToDatabase();
@@ -117,7 +116,6 @@ Player.prototype.playCardsToDatabase = function(){
 		method:"PUT",
 		data: {cards: self.selectedCards},
 		success: function(player){
-			console.log(player);
 			self.addToMoveCounterAndRoundInDB();
 		}
 	});
@@ -145,7 +143,9 @@ Player.prototype.updateObjectStateForMove = function() {
 	var self = this;
 	self.selectedCards.forEach(function(card){
 		var index = self.cardsInHand.indexOf(card);
-		self.cardsInHand.splice(index,1);
+		if(index >= 0){
+			self.cardsInHand.splice(index,1);
+		}
 	});
 	self.selectedCards = [];
 	self.moveCounter++;
@@ -157,7 +157,7 @@ Player.prototype.listenForMoves = function(move) {
 	var self = this;
 	socket.on('move', function(move){
 		self.opponentData.forEach(function(opponentData){
-			if (opponentData.id === move.id){
+			if (opponentData.id === move.id && move.cards[0] != 'pass'){
 				opponentData.numCards -= move.cards.length;
 			}
 		});
@@ -193,23 +193,31 @@ Player.prototype.drawStateForPlayer = function() {
 
 Player.prototype.drawStateForOpponents = function() {
 	var self = this;
+	$('.opponent0').empty();
+	$('.opponent1').empty();
+	$('.opponent2').empty();
 	self.opponentData.forEach(function(opponent){
-		var html = '<div class="opponent" id="'+ opponent.id+'"><p>Cards for: '+ opponent.name+'</p>';
-		for(i = 0; i<opponent.numCards; i++){
-			html += '<div class="card"></div>';
-		}
+		var html = '<div id="'+ opponent.id+'"><p>Cards for: '+ opponent.name+'</p>';
+		html += '<div class="card">X '+opponent.numCards+'</div>';
 		html += '</div>'
-		$('.opponents').append(html);
+		var num = opponent.order
+		if(num === (self.order + 1) % 4){
+			$('.opponent0').append(html);
+		}
+		else if (num === (self.order + 2) % 4){
+			$('.opponent1').append(html);
+		}
+		else{
+			$('.opponent2').append(html);
+		}
 	});
 };
 
 //Implement function to put previous moves on the screen
 Player.prototype.displayPreviousMoves = function() {
 	var self = this;
-	self.previousRoundOfMoves.forEach(function(move){
-		var id = "#" + move.id
-		$(id).append('<div class="card">'+ move.cards +'</div>');
-	});
+	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1];
+	$('.last-play').append('<div class="card">'+ move.cards +'</div>');
 };
 
 
@@ -232,7 +240,7 @@ function playCardsHandler(event){
 }
 
 function passHandler(event){
-	player.selectedCards = [];
+	player.selectedCards = ['pass'];
 	player.playCards();
 }
 

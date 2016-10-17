@@ -88,7 +88,9 @@ app.put('/api/:game_id/players/:id', function(request,response){
 	db.Player.findOne({_id: request.params.id, game: request.params.game_id},function(err, player){
 		request.body.cards.forEach(function(card){
 			var index = player.cardsInHand.indexOf(card);
-			player.cardsInHand.splice(index,1);
+			if (index >= 0 ){
+				player.cardsInHand.splice(index,1);
+			}
 			console.log(index);
 		})
 		player.save();

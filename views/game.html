@@ -15,21 +15,49 @@
     <script src="/scripts/app.js"></script>
 </head>
 <body>
-	<h1>Chinese Poker</h1>
-	<div class="container">
-		<div class="player row">
-			<script id="player-template" type="text/x-handlebars-template">
-				{{#each card}}
-					<div class="card my-card" id="{{this}}">{{this}}
-					</div>
-				{{/each}}
-			</script>
-		</div>	
-		<div class="opponents">
+	<div class=".container-fluid"> 
+		<div class="row title">
+			<h1>Chinese Poker</h1>
 		</div>
-		<div class="move-buttons row">
-			<button type="button" class="play-cards">Play Cards</button>
-			<button type="button" class="pass">Pass</button>
+		<div class="row game">
+			<div class="col-md-9 col-lg-9 game_board">
+				<div class="opponents row">
+					<div class="left_game col-md-3"> 
+						<div class="opponent0">
+						</div>
+					</div>
+					<div class="mid_game col-md-6">
+						<div class="row">
+							<div class="opponent1">
+							</div>
+						</div>
+						<div class="forty-vh row">
+							<div class='last-play col-md-12'>
+							<h3>Last play was</h3>
+							</div>
+						</div>
+					</div>
+					<div class="right_game col-md-3">
+						<div class="opponent2">
+						</div>
+					</div>
+				</div>
+				<div class="player">
+					<div class="move-buttons">
+						<button type="button" class="play-cards btn btn-default">Play Cards</button>
+						<button type="button" class="pass btn btn-default">Pass</button>
+					</div>
+					<script id="player-template" type="text/x-handlebars-template">
+						{{#each card}}
+							<span class="card my-card" id="{{this}}">{{this}}
+							</span>
+						{{/each}}
+					</script>
+				</div>
+			</div>
+			<div class="col-md-3 col-lg-3 scoreboard">
+				<p> This will be the scoreboard and will be done sometime in the future. </p>
+			</div>
 		</div>
 	</div>
 </body>
