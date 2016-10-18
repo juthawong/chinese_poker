@@ -46,7 +46,7 @@ Player.prototype.deselectCard = function(card){
 Player.prototype.playCards = function(){
 	var self = this;
 	if(self.isItMyTurn && self.selectedCards.length > 0){
-		self.updatePreviousRoundOfMoves({id: self.player_id, cards: self.selectedCards});
+		self.updatePreviousRoundOfMoves({id: self.player_id, cards: self.selectedCards, name: self.player_name});
 		self.playCardsToDatabase();
 		self.emitMove();
 		self.updateObjectStateForMove();
@@ -70,7 +70,7 @@ Player.prototype.updatePreviousRoundOfMoves = function(move) {
 
 Player.prototype.emitMove = function() {
 	var self = this;
-	socket.emit('move',{id: self.player_id, cards: self.selectedCards});
+	socket.emit('move',{id: self.player_id, cards: self.selectedCards, name: self.player_name});
 	return false;
 };
 
