@@ -123,7 +123,11 @@ Player.prototype.drawStateForPlayer = function() {
 	var self = this;
 	var playerSource = $('#player-template').html();
 	var playerTemplate = Handlebars.compile(playerSource);
-	var playerHtml = playerTemplate({card: self.cardsInHand});
+	var cardImages = self.cardsInHand.map(function(card){
+		return images(card);
+	});
+	console.log(cardImages);
+	var playerHtml = playerTemplate({card: cardImages});
 	$('.player').append(playerHtml);
 };
 
@@ -134,7 +138,7 @@ Player.prototype.drawStateForOpponents = function() {
 	$('.opponent2').empty();
 	self.opponentData.forEach(function(opponent){
 		var html = '<div id="'+ opponent.id+'"><p>Cards for: '+ opponent.name+'</p>';
-		html += '<div class="card">X '+opponent.numCards+'</div>';
+		html += '<div class="card">x '+opponent.numCards+'</div>';
 		html += '</div>'
 		var num = opponent.order
 		if(num === (self.order + 1) % 4){
@@ -154,7 +158,8 @@ Player.prototype.displayPreviousMoves = function() {
 	var self = this;
 	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1];
 	move.cards.forEach(function(card){
-		$('.last-play').append('<div class="card">'+ card +'</div>');
+		var image = images(card);
+		$('.last-play').append('<img class="card" src="'+image+'">');
 	});	
 };
 
