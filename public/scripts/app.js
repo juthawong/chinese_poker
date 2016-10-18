@@ -173,11 +173,13 @@ Player.prototype.updateWhoseMoveItIs = function() {
 };
 
 
+var player;
+
 $(document).ready(function() {
 	var game_id = $(location)[0].pathname.split("/")[2];
 	var player_id = $(location)[0].pathname.split("/")[4];
-	var player = new Player(game_id,player_id);
-	
+	player = new Player(game_id,player_id);
+
 	function addEventListeners(){
 		$('.play-cards').on("click",playCardsHandler);
 		$('.pass').on("click",passHandler);

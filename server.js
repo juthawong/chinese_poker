@@ -11,6 +11,8 @@ var io = require('socket.io')(http);
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: true }));
 
+var controllers = require('./controllers');
+
 /************
  * DATABASE *
  ************/
@@ -37,92 +39,21 @@ app.get('/', function homepage(request, response) {
 });
 
 //Get gamepage
-app.get('/game/:game_id/players/:player_id', function tourPage(request, response) {
+app.get('/game/:game_id/players/:player_id', function gamePage(request, response) {
   response.sendFile(__dirname + '/views/game.html');
 });
 
-//Get info about ALL games
-app.get('/api/games', function(request,response){
-	db.Game.find({},function(err, games){
-		response.send(games);
-	});
-});
+app.get('/api/games', controllers.games.getGames);
+app.get('/api/:game_id', controllers.games.showGame);
+app.put('/api/:game_id/moveCounter', controllers.games.updateMoveCounterAndPreviousRounds);
+app.post('/api/', controllers.games.postGame);
 
-//Get info about ALL players
-app.get('/api/players', function(request,response){
-	db.Player.find({},function(err, players){
-		response.send(players);
-	});
-});
-
-//Get info about the game
-app.get('/api/:game_id', function(request,response){
-	db.Game.findOne({_id: request.params.game_id},function(err, game){
-		response.send(game);
-	});
-});
-
-//Get info about all players for a specific game
-app.get('/api/:game_id/players/', function(request,response){
-	db.Player.find({game: request.params.game_id},function(err, players){
-		response.send(players);
-	});
-});
-
-//Get info about a specific player
-app.get('/api/:game_id/players/:id', function(request,response){
-	db.Player.findOne({_id: request.params.id, game: request.params.game_id},function(err, player){
-		response.send(player);
-	});
-});
-
-//Get info about all other players
-app.get('/api/:game_id/players/excluding/:id', function(request,response){
-	db.Player.find({_id: {$ne: request.params.id}, game: request.params.game_id},function(err, players){
-		response.send(players);
-	});
-});
-
-//Play a card to the database
-app.put('/api/:game_id/players/:id', function(request,response){
-	db.Player.findOne({_id: request.params.id, game: request.params.game_id},function(err, player){
-		request.body.cards.forEach(function(card){
-			var index = player.cardsInHand.indexOf(card);
-			if (index >= 0 ){
-				player.cardsInHand.splice(index,1);
-			}
-			console.log(index);
-		})
-		player.save();
-		response.send(player);
-	});
-});
-
-//Update move counter and round in the db
-app.put('/api/:game_id/moveCounter', function(request,response){
-	db.Game.findOne({_id: request.params.game_id},function(err,game){
-		game.moveCounter++;
-		game.previousRoundOfMoves = request.body.previousRoundOfMoves;
-		console.dir(request);
-		game.save();
-		response.send(game);
-	});
-});
-
-//Initialize game in DB
-app.post('/api/', function(request,response){
-	console.log(request.body);
-	var newGame = new db.Game (request.body);
-	newGame.save();
-	response.send(newGame);
-});
-
-//Initialize game in DB
-app.post('/api/:game_id/players', function(request,response){
-	db.Player.insertMany(request.body.array,function(err,playerArray){
-		response.send(playerArray);
-	});
-});
+app.get('/api/players', controllers.players.playersIndex);
+app.get('/api/:game_id/players/', controllers.players.showPlayers);
+app.get('/api/:game_id/players/:id', controllers.players.showPlayer);
+app.get('/api/:game_id/players/excluding/:id', controllers.players.showOpponents);
+app.post('/api/:game_id/players', controllers.players.postPlayers);
+app.put('/api/:game_id/players/:id', controllers.players.playCardToDB);
 
  /**********
  * Socket *
