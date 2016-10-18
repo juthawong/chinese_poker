@@ -157,8 +157,13 @@ Player.prototype.displayPreviousMoves = function() {
 	var self = this;
 	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1];
 	move.cards.forEach(function(card){
-		var image = images(card);
-		$('.last-play').append('<img class="card" src="'+image+'">');
+		if(card === 'pass'){
+			$('.last-play').append('<div class="card">pass </div>');
+		}
+		else{
+			var image = images(card);
+			$('.last-play').append('<img class="card" src="'+image+'">');
+		}
 	});	
 };
 

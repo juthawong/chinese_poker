@@ -14,6 +14,7 @@
 	<!-- Program Script -->
     <script src="/scripts/app.js"></script>
     <script src="/scripts/dbfunctions.js"></script>
+    <script src="/scripts/images.js"></script>
 </head>
 <body>
 	<div class=".container-fluid"> 
@@ -51,8 +52,7 @@
 					</div>
 					<script id="player-template" type="text/x-handlebars-template">
 						{{#each card}}
-							<span class="card my-card" id="{{this}}">{{this}}
-							</span>
+							<img class="card my-card" id="{{value}}" src="{{image}}">
 						{{/each}}
 					</script>
 				</div>
