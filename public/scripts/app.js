@@ -15,57 +15,20 @@ function Player (game_id, player_id){
 	this.previousRoundOfMoves = [];
 	this.player_name = "";
 
-	//Initialize game data and socket
-	$.when(self.getCardDataFromDatabase(), 
-		   self.getOpponentInfoFromDatabase(), 
-		   self.getMoveCounterAndRound())
+	//Initialize game data
+	$.when(
+		//Load 3 data sets from the db
+		self.getCardDataFromDatabase(), 
+		self.getOpponentInfoFromDatabase(), 
+		self.getMoveCounterAndRound())
 	 .done(function(){
+	 	//once data is loaded, display everything on screen
 	 	self.checkIfItsMyMove();
 	 	self.drawState();
 	 	self.displayPreviousMoves();
-	 });
+	});
+	//Load web sockets
 	this.listenForMoves();
-}
-
-Player.prototype.getCardDataFromDatabase = function(){
-	var self = this;
-	return $.ajax({
-		method: "GET",
-		url: '/api/' + self.game_id + '/players/' + self.player_id,
-		success: function(data){
-			self.cardsInHand = data.cardsInHand;
-			self.order = data.order;
-			self.player_name = data.name;
-		}
-	});
-}
-
-Player.prototype.getMoveCounterAndRound = function() {
-	var self = this;
-	return $.ajax({
-		method: "GET",
-		url: '/api/' + self.game_id,
-		success: function(game){
-			self.moveCounter = game.moveCounter;
-			self.previousRoundOfMoves = game.previousRoundOfMoves;
-		}
-	});
-};
-
-Player.prototype.getOpponentInfoFromDatabase = function(){
-	var self = this;
-	return $.ajax({
-		method: "GET",
-		url: '/api/' + this.game_id + '/players/excluding/' + this.player_id,
-		success: function(opponentPlayers){
-			opponentPlayers.forEach(function(opponentPlayer){
-				self.opponentData.push({id: opponentPlayer._id, 
-														 numCards: opponentPlayer.cardsInHand.length, 
-														 name: opponentPlayer.name, 
-														 order: opponentPlayer.order})
-			});
-		}
-	});
 }
 
 Player.prototype.selectCard = function(card){
@@ -89,13 +52,8 @@ Player.prototype.playCards = function(){
 		self.updateObjectStateForMove();
 		self.displayPreviousMoves();
 	}
-	else if(self.isItMyTurn){
-		self.emitMove();
-		self.updateObjectStateForMove();
-		self.displayPreviousMoves();
-	}
 	else{
-		console.log("not your turn biatch");
+		console.log("something went wrong");
 	}
 }
 
@@ -104,38 +62,11 @@ Player.prototype.updatePreviousRoundOfMoves = function(move) {
 	if(self.previousRoundOfMoves.length < 4){
 		self.previousRoundOfMoves.push(move);
 	}
-	else if(self.previousRoundOfMoves[1] === 'pass' && self.previousRoundOfMoves[2] === 'pass' && self.previousRoundOfMoves[3] === 'pass'){
-		self.previousRoundOfMoves = [];
-	}
 	else{
 		self.previousRoundOfMoves.shift();
 		self.previousRoundOfMoves.push(move);
 	}
 };
-
-Player.prototype.playCardsToDatabase = function(){
-	var self = this;
-	$.ajax({
-		url: "/api/" + self.game_id + '/players/' + self.player_id,
-		method:"PUT",
-		data: {cards: self.selectedCards},
-		success: function(player){
-			self.addToMoveCounterAndRoundInDB();
-		}
-	});
-}
-
-Player.prototype.addToMoveCounterAndRoundInDB = function(){
-	var self = this;
-	$.ajax({
-		url: "/api/" + self.game_id + "/moveCounter",
-		method:"PUT",
-		data: {previousRoundOfMoves: self.previousRoundOfMoves},
-		success: function(game){
-			console.log(game);
-		}
-	});
-}
 
 Player.prototype.emitMove = function() {
 	var self = this;
@@ -242,12 +173,11 @@ Player.prototype.updateWhoseMoveItIs = function() {
 };
 
 
-
-var game_id = $(location)[0].pathname.split("/")[2];
-var player_id = $(location)[0].pathname.split("/")[4];
-var player = new Player(game_id,player_id);
-
 $(document).ready(function() {
+	var game_id = $(location)[0].pathname.split("/")[2];
+	var player_id = $(location)[0].pathname.split("/")[4];
+	var player = new Player(game_id,player_id);
+	
 	function addEventListeners(){
 		$('.play-cards').on("click",playCardsHandler);
 		$('.pass').on("click",passHandler);
