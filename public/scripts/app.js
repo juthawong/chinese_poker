@@ -124,9 +124,8 @@ Player.prototype.drawStateForPlayer = function() {
 	var playerSource = $('#player-template').html();
 	var playerTemplate = Handlebars.compile(playerSource);
 	var cardImages = self.cardsInHand.map(function(card){
-		return images(card);
+		return {value: card, image: images(card)};
 	});
-	console.log(cardImages);
 	var playerHtml = playerTemplate({card: cardImages});
 	$('.player').append(playerHtml);
 };
