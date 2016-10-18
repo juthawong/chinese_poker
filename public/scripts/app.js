@@ -15,9 +15,9 @@ function Player (game_id, player_id){
 	this.player_name = "";
 
 	//Initialize game data and socket
-	this.getMoveCounterAndRound();
 	this.getCardDataFromDatabase();
 	this.getOpponentInfoFromDatabase();
+	this.getMoveCounterAndRound();
 	this.listenForMoves();
 }
 
@@ -220,7 +220,9 @@ Player.prototype.drawStateForOpponents = function() {
 Player.prototype.displayPreviousMoves = function() {
 	var self = this;
 	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1];
-	$('.last-play').append('<div class="card">'+ move.cards +'</div>');
+	move.cards.forEach(function(card){
+		$('.last-play').append('<div class="card">'+ card +'</div>');
+	});	
 };
 
 Player.prototype.updateWhoseMoveItIs = function() {
