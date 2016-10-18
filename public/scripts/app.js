@@ -2,6 +2,7 @@
 var socket = io();
 
 function Player (game_id, player_id){
+	var self = this;
 	this.game_id = game_id;
 	this.player_id = player_id;
 	this.opponentData = [];
@@ -15,43 +16,45 @@ function Player (game_id, player_id){
 	this.player_name = "";
 
 	//Initialize game data and socket
-	this.getCardDataFromDatabase();
-	this.getOpponentInfoFromDatabase();
-	this.getMoveCounterAndRound();
+	$.when(self.getCardDataFromDatabase(), 
+		   self.getOpponentInfoFromDatabase(), 
+		   self.getMoveCounterAndRound())
+	 .done(function(){
+	 	self.checkIfItsMyMove();
+	 	self.drawState();
+	 	self.displayPreviousMoves();
+	 });
 	this.listenForMoves();
 }
 
 Player.prototype.getCardDataFromDatabase = function(){
 	var self = this;
-	$.ajax({
+	return $.ajax({
 		method: "GET",
 		url: '/api/' + self.game_id + '/players/' + self.player_id,
 		success: function(data){
 			self.cardsInHand = data.cardsInHand;
 			self.order = data.order;
 			self.player_name = data.name;
-			self.drawState();
 		}
 	});
 }
 
 Player.prototype.getMoveCounterAndRound = function() {
 	var self = this;
-	$.ajax({
+	return $.ajax({
 		method: "GET",
 		url: '/api/' + self.game_id,
 		success: function(game){
 			self.moveCounter = game.moveCounter;
 			self.previousRoundOfMoves = game.previousRoundOfMoves;
-			self.checkIfItsMyMove();
-			self.displayPreviousMoves();
 		}
 	});
 };
 
 Player.prototype.getOpponentInfoFromDatabase = function(){
 	var self = this;
-	$.ajax({
+	return $.ajax({
 		method: "GET",
 		url: '/api/' + this.game_id + '/players/excluding/' + this.player_id,
 		success: function(opponentPlayers){
@@ -60,7 +63,6 @@ Player.prototype.getOpponentInfoFromDatabase = function(){
 														 numCards: opponentPlayer.cardsInHand.length, 
 														 name: opponentPlayer.name, 
 														 order: opponentPlayer.order})
-				self.drawState();
 			});
 		}
 	});
