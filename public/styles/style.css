@@ -3,6 +3,7 @@
 	width: 66px;
 	border: 1px solid black;
 	display: inline-block;
+	background-color: white;
 }
 
 .container-fluid{
@@ -13,6 +14,7 @@
 
 .game_board{
 	border: 1px solid black;
+	background-color: green;
 }
 
 .selected{
