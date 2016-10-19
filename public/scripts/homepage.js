@@ -89,6 +89,7 @@ function joinGame(event){
 }
 
 function drawGamesOnScreen(games){
+	$('.game').remove();
 	var source = $('#game-template').html();
 	var gameTemplate = Handlebars.compile(source);
 	var gameHtml = gameTemplate({ game: games });
