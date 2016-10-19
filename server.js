@@ -64,7 +64,6 @@ io.on('connection', function(socket){
     console.log('user disconnected');
   });
   socket.on('move', function(move){
-  	console.log("received : " +  move);
     socket.broadcast.emit('move', move);
   });
 });

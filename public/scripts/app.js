@@ -1,5 +1,6 @@
 // Initialize web socket
 var socket = io();
+var player;
 
 function Player (game_id, player_id){
 	var self = this;
@@ -117,6 +118,7 @@ Player.prototype.drawState = function() {
 	this.drawStateForPlayer();
 	this.drawStateForOpponents();
 	this.updateWhoseMoveItIs();
+	this.moveHistory();
 };
 
 Player.prototype.drawStateForPlayer = function() {
@@ -174,15 +176,24 @@ Player.prototype.updateWhoseMoveItIs = function() {
 	}
 	else {
 		self.opponentData.forEach(function (opponent, index){
-			if((self.moveCounter % 4) === opponent.order ){
+			if((self.moveCounter % 4) === opponent.order){
 				$('.player-to-move').text("Player to move is " + opponent.name);
 			}
 		});
 	}
 };
 
+Player.prototype.moveHistory = function() {
+	self = this;
+	$('.historical-move').remove();
+	var historySource = $('#history-template').html();
+	var historyTemplate = Handlebars.compile(historySource);
+	var reversedArray = Array.prototype.slice.call(self.previousRoundOfMoves).reverse();
+	var historyHtml = historyTemplate({move: reversedArray});
+	$('#history').append(historyHtml);
+};
 
-var player;
+
 
 $(document).ready(function() {
 	var game_id = $(location)[0].pathname.split("/")[2];
@@ -195,6 +206,7 @@ $(document).ready(function() {
 		$('.player').on("click",'.my-card',selectCardHandler)
 	}
 	addEventListeners();
+
 });
 
 function playCardsHandler(event){

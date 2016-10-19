@@ -62,11 +62,11 @@ function loadPlayersToDB(playersArray){
 }
 
 function dealCards (playersArray) {
-	var suits = ["C", "D", "H", "S"];
-	var cardValues = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"]
-	for(i = 0; i < suits.length; i++){
-		for (j = 0; j < cardValues.length; j++){
-			var card = cardValues[j] + suits[i];
+	var suits = ["D", "C", "H", "S"];
+	var cardValues = ["3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A", "2"]
+	for(i = 0; i < cardValues.length; i++){
+		for (j = 0; j < suits.length; j++){
+			var card = cardValues[i] + suits[j];
 			var foundPlayer = false;
 			while(!foundPlayer){
 				var playerNumber = Math.floor(Math.random() * 4);
