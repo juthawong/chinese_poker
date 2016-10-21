@@ -50,6 +50,7 @@ Player.prototype.playCards = function(){
 		self.updatePreviousRoundOfMoves({id: self.player_id, cards: self.selectedCards, name: self.player_name});
 		self.playCardsToDatabase();
 		self.emitMove();
+		self.isItMyTurn = false;
 		self.updateObjectStateForMove();
 		self.displayPreviousMoves();
 	}
@@ -85,7 +86,6 @@ Player.prototype.updateObjectStateForMove = function() {
 	});
 	self.selectedCards = [];
 	self.moveCounter++;
-	self.isItMyTurn = false;
 	self.drawState();
 };
 
@@ -110,6 +110,9 @@ Player.prototype.checkIfItsMyMove = function() {
 	if(self.moveCounter % 4 === self.order){
 		self.isItMyTurn = true;
 	}
+	else{
+		self.isItMyTurn = false;
+	}
 };
 
 Player.prototype.drawState = function() {
@@ -118,7 +121,7 @@ Player.prototype.drawState = function() {
 	this.drawStateForPlayer();
 	this.drawStateForOpponents();
 	this.updateWhoseMoveItIs();
-	this.moveHistory();
+	this.displayMoveHistory();
 };
 
 Player.prototype.drawStateForPlayer = function() {
@@ -183,7 +186,7 @@ Player.prototype.updateWhoseMoveItIs = function() {
 	}
 };
 
-Player.prototype.moveHistory = function() {
+Player.prototype.displayMoveHistory = function() {
 	self = this;
 	$('.historical-move').remove();
 	var historySource = $('#history-template').html();
