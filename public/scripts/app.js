@@ -61,13 +61,7 @@ Player.prototype.playCards = function(){
 
 Player.prototype.updatePreviousRoundOfMoves = function(move) {
 	var self = this;
-	if(self.previousRoundOfMoves.length < 4){
-		self.previousRoundOfMoves.push(move);
-	}
-	else{
-		self.previousRoundOfMoves.shift();
-		self.previousRoundOfMoves.push(move);
-	}
+	self.previousRoundOfMoves.push(move);
 };
 
 Player.prototype.emitMove = function() {

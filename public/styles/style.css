@@ -4,6 +4,7 @@
 	border: 1px solid black;
 	display: inline-block;
 	background-color: white;
+	margin-top: 10px;
 }
 
 h3{
@@ -36,6 +37,10 @@ h3{
 .opponents{
 	text-align: center;
 	height: 60vh;
+}
+
+.player{
+	height: 20vh;
 }
 
 .forty-vh{
