@@ -61,7 +61,17 @@ Player.prototype.playCards = function(){
 
 Player.prototype.updatePreviousRoundOfMoves = function(move) {
 	var self = this;
-	self.previousRoundOfMoves.push(move);
+	var roundIndex = self.previousRoundOfMoves.length-1;
+	var countIndex = self.previousRoundOfMoves[roundIndex].round.length-1;
+	if( self.previousRoundOfMoves.length === 0 ){
+		self.previousRoundOfMoves.push({round: [move]});
+	}
+	else if(self.previousRoundOfMoves[roundIndex].round[countIndex].cards[0] === 'pass' && self.previousRoundOfMoves[roundIndex].round[countIndex-1].cards[0] === 'pass' && self.previousRoundOfMoves[roundIndex].round[countIndex-2].cards[0] === 'pass'){
+		self.previousRoundOfMoves.push({round: [move]});
+	}
+	else {
+		self.previousRoundOfMoves[roundIndex].round.push(move);
+	}
 };
 
 Player.prototype.emitMove = function() {
@@ -154,7 +164,7 @@ Player.prototype.drawStateForOpponents = function() {
 //Implement function to put previous moves on the screen
 Player.prototype.displayPreviousMoves = function() {
 	var self = this;
-	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1];
+	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1].round[self.previousRoundOfMoves[self.previousRoundOfMoves.length-1].round.length-1];
 	move.cards.forEach(function(card){
 		if(card === 'pass'){
 			$('.last-play').append('<div class="card">pass </div>');
@@ -185,11 +195,10 @@ Player.prototype.displayMoveHistory = function() {
 	$('.historical-move').remove();
 	var historySource = $('#history-template').html();
 	var historyTemplate = Handlebars.compile(historySource);
-	var reversedArray = Array.prototype.slice.call(self.previousRoundOfMoves).reverse();
+	var reversedArray = Array.prototype.slice.call(self.previousRoundOfMoves[self.previousRoundOfMoves.length-1].round).reverse();
 	var historyHtml = historyTemplate({move: reversedArray});
 	$('#history').append(historyHtml);
 };
-
 
 
 $(document).ready(function() {
