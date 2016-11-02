@@ -216,6 +216,9 @@ $(document).ready(function() {
 		$('.play-cards').on("click",playCardsHandler);
 		$('.pass').on("click",passHandler);
 		$('.player').on("click",'.my-card',selectCardHandler)
+		$('.go-home').on("click",function(){
+			$(location).attr('href','/');
+		});
 	}
 	addEventListeners();
 

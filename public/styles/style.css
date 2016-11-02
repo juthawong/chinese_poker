@@ -60,6 +60,10 @@ h3{
 	height: 10vh;
 }
 
+.go-home{
+	cursor: pointer;
+}
+
 *{
 	/*border: 1px solid green;*/
 }
