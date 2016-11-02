@@ -164,16 +164,22 @@ Player.prototype.drawStateForOpponents = function() {
 //Implement function to put previous moves on the screen
 Player.prototype.displayPreviousMoves = function() {
 	var self = this;
-	move = self.previousRoundOfMoves[self.previousRoundOfMoves.length-1].round[self.previousRoundOfMoves[self.previousRoundOfMoves.length-1].round.length-1];
-	move.cards.forEach(function(card){
-		if(card === 'pass'){
-			$('.last-play').append('<div class="card">pass </div>');
+	var currentRound = self.previousRoundOfMoves.length-1;
+	var i = self.previousRoundOfMoves[currentRound].round.length-1;
+	while(i >= 0){
+		move = self.previousRoundOfMoves[currentRound].round[i];
+		if(move.cards[0] === 'pass'){
+			i--;
+			continue;
 		}
 		else{
-			var image = images(card);
-			$('.last-play').append('<img class="card" src="'+image+'">');
+			move.cards.forEach(function(card){
+				var image = images(card);
+				$('.last-play').append('<img class="card" src="'+image+'">');
+			});	
+			break;
 		}
-	});	
+	}
 };
 
 Player.prototype.updateWhoseMoveItIs = function() {
