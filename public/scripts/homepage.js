@@ -129,7 +129,7 @@ function drawPlayersInModal(players){
 
 function openPlayerModal(event){
 	event.preventDefault();
-	console.log('hello');
+	$('#player-modal').find('.form-group').remove();
 	var game_id = $(this).attr('id');
 	getPlayersFromDB(game_id);
 	$('#player-modal').modal();

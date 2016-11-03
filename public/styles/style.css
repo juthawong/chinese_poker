@@ -13,6 +13,7 @@ h3{
 
 .join-game{
 	display: block !important;
+	margin: 0 auto;
 }
 
 .container-fluid{
@@ -58,6 +59,11 @@ h3{
 .title{
 	text-align: center;
 	height: 10vh;
+}
+
+.game-title{
+	display: inline-block;
+	margin: 5px;
 }
 
 .go-home{

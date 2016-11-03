@@ -17,7 +17,7 @@
 <body>
 	<div class="container">
 		<h1>Chinese Poker</h1>
-		<button class='create'>Create New Game</button>
+		<button class='create btn btn-primary'>Create New Game</button>
 	</div>
 	<br>
 	<br>
@@ -26,7 +26,7 @@
 			{{#each game}}
 			<div class="row">
 				<div class="game">
-				  <button id="{{_id}}" class="game-title">Join: {{name}}</button>
+				  <button id="{{_id}}" class="game-title btn btn-secondary">Join: {{name}}</button>
 		        </div>
 			</div>
 			{{/each}}
@@ -103,12 +103,12 @@
           </div>
           <form>
 	          <div class="modal-body player-select">
-	              <!-- Text input-->
-				<script id="player-template" type="text/x-handlebars-template">
-				{{#each player}}
+              <!-- Text input-->
+							<script id="player-template" type="text/x-handlebars-template">
+							{{#each player}}
 	              <!-- Text input-->
 	              <div class="form-group">
-	                <button class="col-md-4 control-label join-game" id="{{_id}}" data-game="{{game}}">{{name}}</button><br>
+	                <button class="col-md-4 control-label join-game btn btn-secondary" id="{{_id}}" data-game="{{game}}">{{name}}</button><br>
 	              </div>
 	            {{/each}}
 	            </script>
