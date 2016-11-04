@@ -36,5 +36,10 @@ function images(card){
 			break;
 	}
 
-	return "/img/" + value + "_of_" + suit +".png"
+	if (value === "king" || value === "queen" || value === "jack"){
+		return "/img/" + value + "_of_" + suit +"2.png"
+	}
+	else{
+		return "/img/" + value + "_of_" + suit +".png"
+	}
 }
