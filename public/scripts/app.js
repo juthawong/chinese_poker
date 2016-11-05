@@ -62,7 +62,16 @@ Player.prototype.playCards = function(){
 Player.prototype.updatePreviousRoundOfMoves = function(move) {
 	var self = this;
 	var roundIndex = self.previousRoundOfMoves.length-1;
-	var countIndex = self.previousRoundOfMoves[roundIndex].round.length-1;
+	if (roundIndex < 0) {
+		roundIndex = 0;
+	}
+	if(self.previousRoundOfMoves[roundIndex]){
+		var countIndex = self.previousRoundOfMoves[roundIndex].round.length-1;
+	}
+	else {
+		countIndex = 0;
+	}
+	
 	if( self.previousRoundOfMoves.length === 0 ){
 		self.previousRoundOfMoves.push({round: [move]});
 	}
@@ -93,8 +102,12 @@ Player.prototype.updateObjectStateForMove = function() {
 	self.drawState();
 };
 
-Player.prototype.listenForMoves = function(move) {
+Player.prototype.listenForMoves = function() {
 	var self = this;
+	socket.on('undo', function(){
+		console.log('got message to undo');
+		location.reload();
+	});
 	socket.on('move', function(move){
 		self.opponentData.forEach(function(opponentData){
 			if (opponentData.id === move.id && move.cards[0] != 'pass'){
@@ -201,6 +214,10 @@ Player.prototype.displayMoveHistory = function() {
 	$('.historical-move').remove();
 	var historySource = $('#history-template').html();
 	var historyTemplate = Handlebars.compile(historySource);
+	var roundIndex = self.previousRoundOfMoves.length-1;
+	if (roundIndex < 0){
+		roundIndex = 0;
+	}
 	var reversedArray = Array.prototype.slice.call(self.previousRoundOfMoves[self.previousRoundOfMoves.length-1].round).reverse();
 	var historyHtml = historyTemplate({move: reversedArray});
 	$('#history').append(historyHtml);
@@ -215,6 +232,7 @@ $(document).ready(function() {
 	function addEventListeners(){
 		$('.play-cards').on("click",playCardsHandler);
 		$('.pass').on("click",passHandler);
+		$('.undo').on("click",undoHandler);
 		$('.player').on("click",'.my-card',selectCardHandler)
 		$('.go-home').on("click",function(){
 			$(location).attr('href','/');
@@ -246,3 +264,58 @@ function selectCardHandler(event){
 		$(self).toggleClass('selected');
 	}
 }
+
+function undoHandler(event){
+	event.preventDefault();
+	var currentRound = player.previousRoundOfMoves.length-1;
+	var lastMove = player.previousRoundOfMoves[currentRound].round.pop();
+	console.log(lastMove);
+	console.log(lastMove.cards[0]);
+	console.log(lastMove.cards[0] === 'pass');
+
+	var undoPlayerData = function() {
+		$.ajax({
+			url: "/api/" + player.game_id + '/players/' + lastMove.id + "/undo",
+			method:"PUT",
+			data: {cards: lastMove.cards},
+			success: function(json){
+				console.log(json);
+			}
+		});
+	}
+
+	var undoGameData = function() {
+		$.ajax({
+			url: '/api/' + player.game_id + '/undo',
+			method:"PUT",
+			data: {previousRoundOfMoves: player.previousRoundOfMoves},
+			success: function(json){
+				console.log(json);
+			}
+		});
+	}
+
+	if (lastMove.cards[0] === 'pass'){
+		$.when(
+			//Undo data in 2 places
+			undoGameData())
+		 .done(function(){
+		 	//once data is loaded, refresh to get clean data
+		 	socket.emit('undo');
+			location.reload();
+		});
+	}
+	else{
+		$.when(
+			//Undo data in 2 places
+			undoPlayerData(), 
+			undoGameData())
+		 .done(function(){
+		 	//once data is loaded, refresh to get clean data
+		 	socket.emit('undo');
+			location.reload();
+		});
+	}
+}
+
+

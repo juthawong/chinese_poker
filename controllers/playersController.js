@@ -44,6 +44,16 @@ function playCardToDB(request,response){
 	});
 }
 
+function undoLastMoveForPlayer(request,response){
+	db.Player.findOne({_id: request.params.id, game: request.params.game_id},function(err, player){
+		request.body.cards.forEach(function(card){
+			player.cardsInHand.push(card);
+		});
+		player.save();
+		response.send(player);
+	});
+}
+
 // export public methods here
 module.exports = {
   playersIndex: playersIndex,
@@ -51,5 +61,6 @@ module.exports = {
   showPlayer: showPlayer,
   showOpponents: showOpponents,
   postPlayers: postPlayers,
-  playCardToDB: playCardToDB
+  playCardToDB: playCardToDB,
+  undoLastMoveForPlayer: undoLastMoveForPlayer
 };

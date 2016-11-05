@@ -29,10 +29,20 @@ function postGame(request,response){
 	response.send(newGame);
 }
 
+function undoLastMoveForGame(request,response){
+	db.Game.findOne({_id: request.params.game_id},function(err,game){
+		game.moveCounter--;
+		game.previousRoundOfMoves = request.body.previousRoundOfMoves;
+		game.save();
+		response.send(game);
+	});
+}
+
 // export public methods here
 module.exports = {
   getGames: getGames,
   showGame: showGame,
   updateMoveCounterAndPreviousRounds: updateMoveCounterAndPreviousRounds,
-  postGame: postGame
+  postGame: postGame,
+  undoLastMoveForGame: undoLastMoveForGame
 };

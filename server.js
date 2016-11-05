@@ -46,6 +46,7 @@ app.get('/game/:game_id/players/:player_id', function gamePage(request, response
 app.get('/api/games', controllers.games.getGames);
 app.get('/api/:game_id', controllers.games.showGame);
 app.put('/api/:game_id/moveCounter', controllers.games.updateMoveCounterAndPreviousRounds);
+app.put('/api/:game_id/undo', controllers.games.undoLastMoveForGame); //TODO 
 app.post('/api/', controllers.games.postGame);
 
 app.get('/api/players', controllers.players.playersIndex);
@@ -54,10 +55,11 @@ app.get('/api/:game_id/players/:id', controllers.players.showPlayer);
 app.get('/api/:game_id/players/excluding/:id', controllers.players.showOpponents);
 app.post('/api/:game_id/players', controllers.players.postPlayers);
 app.put('/api/:game_id/players/:id', controllers.players.playCardToDB);
+app.put('/api/:game_id/players/:id/undo', controllers.players.undoLastMoveForPlayer); 
 
- /**********
- * Socket *
- **********/
+/**********
+* Socket *
+**********/
 io.on('connection', function(socket){
   console.log('a user connected');
   socket.on('disconnect', function(){
@@ -65,6 +67,10 @@ io.on('connection', function(socket){
   });
   socket.on('move', function(move){
     socket.broadcast.emit('move', move);
+  });
+  socket.on('undo',function(){
+    console.log('undo move now');
+    socket.broadcast.emit('undo');
   });
 });
 
