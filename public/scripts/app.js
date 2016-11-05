@@ -61,10 +61,7 @@ Player.prototype.playCards = function(){
 
 Player.prototype.updatePreviousRoundOfMoves = function(move) {
 	var self = this;
-	var roundIndex = self.previousRoundOfMoves.length-1;
-	if (roundIndex < 0) {
-		roundIndex = 0;
-	}
+	var roundIndex = self.previousRoundOfMoves.length-1 < 0 ? 0 : self.previousRoundOfMoves.length-1;
 	if(self.previousRoundOfMoves[roundIndex]){
 		var countIndex = self.previousRoundOfMoves[roundIndex].round.length-1;
 	}
@@ -75,8 +72,13 @@ Player.prototype.updatePreviousRoundOfMoves = function(move) {
 	if( self.previousRoundOfMoves.length === 0 ){
 		self.previousRoundOfMoves.push({round: [move]});
 	}
-	else if(self.previousRoundOfMoves[roundIndex].round[countIndex].cards[0] === 'pass' && self.previousRoundOfMoves[roundIndex].round[countIndex-1].cards[0] === 'pass' && self.previousRoundOfMoves[roundIndex].round[countIndex-2].cards[0] === 'pass'){
-		self.previousRoundOfMoves.push({round: [move]});
+	else if(self.previousRoundOfMoves[roundIndex].round.length > 3){
+		if(self.previousRoundOfMoves[roundIndex].round[countIndex].cards[0] === 'pass' && self.previousRoundOfMoves[roundIndex].round[countIndex-1].cards[0] === 'pass' && self.previousRoundOfMoves[roundIndex].round[countIndex-2].cards[0] === 'pass'){
+		self.previousRoundOfMoves.push({round: [move]})
+		}
+		else {
+			self.previousRoundOfMoves[roundIndex].round.push(move);
+		}
 	}
 	else {
 		self.previousRoundOfMoves[roundIndex].round.push(move);
@@ -267,11 +269,11 @@ function selectCardHandler(event){
 
 function undoHandler(event){
 	event.preventDefault();
+	if (player.moveCounter === 0) {
+		return true;
+	}
 	var currentRound = player.previousRoundOfMoves.length-1;
 	var lastMove = player.previousRoundOfMoves[currentRound].round.pop();
-	console.log(lastMove);
-	console.log(lastMove.cards[0]);
-	console.log(lastMove.cards[0] === 'pass');
 
 	var undoPlayerData = function() {
 		$.ajax({
